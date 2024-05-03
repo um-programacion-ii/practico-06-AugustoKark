@@ -79,7 +79,7 @@ public class Paciente implements Callable {
 
         // Asistir al turno
         for (Turno turno : turnosSolicitados) {
-            clinicaService.asistirTurno(1, this);
+            clinicaService.asistirTurno(turno.getMedicoId(), this);
             Thread.sleep(10);
             System.out.println("El paciente " + nombre + " " + apellido + " ha asistido a su turno.");
         }

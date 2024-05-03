@@ -7,7 +7,9 @@ import programacion2.curso2024.enumeracion.ObraSocial;
 import programacion2.curso2024.services.ClinicaService;
 import programacion2.curso2024.services.GestionTurnosService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,26 +26,28 @@ public class Main {
         medico.setObrasSociales(Arrays.asList(ObraSocial.PAMI, ObraSocial.OSDE));
 
         Medico medico2 = new Medico("Pedro", Medico.Especialidad.CARDIOLOGIA, false,  2);
-        medico2.setObrasSociales(Arrays.asList(ObraSocial.MEDIFE, ObraSocial.SWISS_MEDICAL, ObraSocial.PAMI));
+        medico2.setObrasSociales(Arrays.asList(ObraSocial.MEDIFE, ObraSocial.SWISS_MEDICAL));
         medicoDao.guardar(medico);
         medicoDao.guardar(medico2);
 
-        // Crear un ExecutorService para manejar los hilos
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-
         // Crear un Paciente (hilo) y enviarlo al ExecutorService
+        List<Paciente> pacientitos = new ArrayList<>();
         Paciente paciente = new Paciente("Juan", "Perez", ObraSocial.PAMI, 123);
+        Paciente paciente2 = new Paciente("Alberto", "Mendoza", ObraSocial.OSDE, 456);
+
+        pacientitos.add(paciente);
+        pacientitos.add(paciente2);
 
 
-
-        Future<String> resultado = executor.submit(paciente);
-
-
-        try {
-            System.out.println(resultado.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+     for (Paciente pacientito : pacientitos) {
+         Future<String> resultado = executor.submit(pacientito);
+         try {
+             System.out.println(resultado.get());
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
         executor.shutdown();
     }
 }

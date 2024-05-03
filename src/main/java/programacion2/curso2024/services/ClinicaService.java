@@ -17,7 +17,7 @@ public class ClinicaService {
     }
     private MedicoDao medicoDao = new MedicoDao();
 
-    public void asistirTurno(int idMedico,Paciente paciente){
+    public synchronized void asistirTurno(int idMedico,Paciente paciente){
         if(medicoDao.getMedicos().containsKey(idMedico)){
             Medico medico = medicoDao.buscar(idMedico);
             medico.setEstado(Medico.Estado.LIBRE);

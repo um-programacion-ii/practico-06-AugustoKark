@@ -1,7 +1,10 @@
 package programacion2.curso2024.entidades;
 
+import lombok.Data;
+
+@Data
 public class Turno {
-    private Medico medico;
+    private  int medicoId ;
     private Paciente paciente;
     private int id;
 

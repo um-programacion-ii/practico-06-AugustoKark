@@ -29,25 +29,20 @@ public class GestionTurnosService {
 
 
 
-    public void solicitarTurno(int idMedico, Paciente paciente){
+    public synchronized void solicitarTurno(int idMedico, Paciente paciente){
         System.out.println("Solicitando turno");
         Turno turno = new Turno();
         turno.setId(turnoIdCounter++);
-
-
-
+        turno.setMedicoId(idMedico);
+        turno.setPaciente(paciente);
 
         if(medicoDao.getMedicos().containsKey(idMedico)){
             Medico medico = medicoDao.buscar(idMedico);
             medico.setEstado(Medico.Estado.OCUPADO);
             medicoDao.modificar(idMedico, medico);
-
-
             turnos.put(turno.getId(), turno);
-
             paciente.getTurnosSolicitados().add(turno);
             System.out.println("Turno agregado. El paciente ahora tiene " + paciente.getTurnosSolicitados().size() + " turnos.");
-
             turnoDao.guardar(turno);
         }else{
             System.out.println("El medico no existe");
