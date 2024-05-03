@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import programacion2.curso2024.dao.MedicoDao;
 import programacion2.curso2024.dao.PacienteDao;
 import programacion2.curso2024.enumeracion.ObraSocial;
-import programacion2.curso2024.services.ClinicaService;
+import programacion2.curso2024.services.AtencionMedicoService;
+import programacion2.curso2024.services.FarmaciaService;
 import programacion2.curso2024.services.GestionTurnosService;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,17 +35,27 @@ public class Paciente implements Callable {
         this.apellido = apellido;
         this.obraSocial = obraSocial;
         this.id = id;
-        this.clinicaService = ClinicaService.getInstance();
+        this.atencionMedicoService = AtencionMedicoService.getInstance();
 
         
     }
 
-    public ClinicaService clinicaService = ClinicaService.getInstance();
+    public AtencionMedicoService atencionMedicoService = AtencionMedicoService.getInstance();
     public GestionTurnosService gestionTurnosService = GestionTurnosService.getInstance();
     public PacienteDao pacienteDao = PacienteDao.getInstance();
     public MedicoDao medicoDao = MedicoDao.getInstance();
     public int getId() {
         return id;
+    }
+
+    public void pedirMedicamentos(Turno turno) {
+        if (turno.getReceta().isPresent()) {
+            Receta receta = turno.getReceta().get();
+            FarmaciaService farmaciaService = FarmaciaService.getInstance();
+            farmaciaService.entregarMedicamentos(receta);
+        } else {
+            System.out.println("No hay receta para este turno.");
+        }
     }
 
 
@@ -69,28 +79,22 @@ public class Paciente implements Callable {
 
         if (continuar){
 
-
-
-
         // Solicitar turno
         gestionTurnosService.solicitarTurno(medico.getId(), this);
-        System.out.println("El paciente " + nombre + " " + apellido + " ha solicitado un turno.");
-
 
         // Asistir al turno
         for (Turno turno : turnosSolicitados) {
-            clinicaService.asistirTurno(turno.getMedicoId(), this);
-            Thread.sleep(10);
-            System.out.println("El paciente " + nombre + " " + apellido + " ha asistido a su turno.");
+            atencionMedicoService.asistirTurno(turno.getMedicoId(), this);
+
+            if (turno.getReceta().isPresent()) {
+                pedirMedicamentos(turno);
+            }
         }
 
-            try {
-                Thread.sleep(10); // Esperar un tiempo antes de asistir al siguiente turno
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-        return ".";
+
+
+
     }
         return "";
     }

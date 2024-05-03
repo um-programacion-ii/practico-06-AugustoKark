@@ -2,8 +2,10 @@ package programacion2.curso2024.dao;
 
 import programacion2.curso2024.entidades.Medico;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarOutputStream;
 
 public class MedicoDao {
     private Map<Integer, Medico> medicos = new HashMap<>();

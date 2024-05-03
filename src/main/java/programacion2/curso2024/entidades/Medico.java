@@ -3,6 +3,7 @@ package programacion2.curso2024.entidades;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import programacion2.curso2024.dao.RecetaDao;
 import programacion2.curso2024.enumeracion.ObraSocial;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class Medico {
         LIBRE, OCUPADO
     }
 
+    RecetaDao recetaDao = RecetaDao.getInstance();
+
     public enum Especialidad {
         CLINICA,
         PEDIATRIA,
@@ -42,4 +45,14 @@ public class Medico {
         this.id = id;
         this.estado = Estado.LIBRE;
     }
+
+
+    public Receta crearReceta(List<Medicamento> medicamentos) {
+        Receta receta = new Receta();
+        receta.setIdMedico(this.id);
+        receta.setMedicamentos(medicamentos);
+        recetaDao.guardar(receta);
+        return receta;
+    }
 }
+

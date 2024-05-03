@@ -4,7 +4,7 @@ import programacion2.curso2024.dao.MedicoDao;
 import programacion2.curso2024.entidades.Medico;
 import programacion2.curso2024.entidades.Paciente;
 import programacion2.curso2024.enumeracion.ObraSocial;
-import programacion2.curso2024.services.ClinicaService;
+import programacion2.curso2024.services.AtencionMedicoService;
 import programacion2.curso2024.services.GestionTurnosService;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
         // Crear instancias de los servicios
         GestionTurnosService gestionTurnosService = GestionTurnosService.getInstance();
-        ClinicaService clinicaService = ClinicaService.getInstance();
+        AtencionMedicoService atencionMedicoService = AtencionMedicoService.getInstance();
         MedicoDao medicoDao = MedicoDao.getInstance();
 
         // Crear un médico
