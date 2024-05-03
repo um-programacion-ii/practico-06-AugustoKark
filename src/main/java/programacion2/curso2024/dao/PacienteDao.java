@@ -8,6 +8,15 @@ import java.util.Map;
 public class PacienteDao {
     private Map<Integer, Paciente> pacientes= new HashMap<>();
 
+    public static PacienteDao instance = null;
+
+    public static PacienteDao getInstance(){
+        if(instance == null){
+            instance = new PacienteDao();
+        }
+        return instance;
+    }
+
 
     public void guardar(Paciente paciente){
     if (!pacientes.containsKey(paciente.getId())) {

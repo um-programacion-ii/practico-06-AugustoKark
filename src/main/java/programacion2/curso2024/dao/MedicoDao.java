@@ -8,11 +8,21 @@ import java.util.Map;
 public class MedicoDao {
     private Map<Integer, Medico> medicos = new HashMap<>();
 
+    public static MedicoDao instance = null;
+
+    public static MedicoDao getInstance(){
+        if(instance == null){
+            instance = new MedicoDao();
+        }
+        return instance;
+    }
+
 
 
     public void guardar(Medico medico){
     if (!medicos.containsKey(medico.getId())) {
         medicos.put(medico.getId(), medico);
+
     }
 }
     public void borrar(int id){
@@ -25,6 +35,8 @@ public class MedicoDao {
         medicos.put(id, medico);
     }
     public Map<Integer, Medico> getMedicos(){
+
+
         return medicos;
     }
 
