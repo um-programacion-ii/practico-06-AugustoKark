@@ -20,6 +20,8 @@ public class FarmaciaService {
         return instance;
     }
 
+
+
     public void entregarMedicamentos(Receta receta) {
     System.out.println("Entregando medicamentos para la receta " + receta.getId());
 

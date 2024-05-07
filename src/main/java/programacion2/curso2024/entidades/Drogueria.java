@@ -17,7 +17,7 @@ private static Drogueria instance = null;
 
     public void hacerPedido(Medicamento medicamento){
         System.out.println("Haciendo pedido a la drogueria");
-FarmaciaDao.getInstance().aumentarStock(10, medicamento);
+        FarmaciaDao.getInstance().aumentarStock(10, medicamento);
 
 
     }
