@@ -5,11 +5,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.MockedStatic;
 import programacion2.curso2024.dao.MedicoDao;
-import programacion2.curso2024.dao.TurnoDao;
 import programacion2.curso2024.entidades.Medico;
 import programacion2.curso2024.entidades.Paciente;
+import programacion2.curso2024.entidades.Turno;
 import programacion2.curso2024.enumeracion.ObraSocial;
-import programacion2.curso2024.services.GestionTurnosService;
+import programacion2.curso2024.services.AtencionMedicoService;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -18,32 +18,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import java.util.Map;
+import java.util.Random;
 
 import static org.mockito.Mockito.*;
 
-public class GestionTurnoServiceTest {
-
-    @Mock
-    private TurnoDao turnoDaoMock;
+public class AtencionMedicoServiceTest {
 
     @Mock
     private MedicoDao medicoDaoMock;
 
-    private GestionTurnosService gestionTurnosService;
+    private AtencionMedicoService atencionMedicoService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
+        Mockito.reset(medicoDaoMock);
     }
 
- @Test
-void testSolicitarTurno() {
-    try (MockedStatic<TurnoDao> turnoDaoMockedStatic = Mockito.mockStatic(TurnoDao.class);
-         MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
+@Test
+void testAsistirTurno() {
+    Mockito.reset(medicoDaoMock);
+    try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
 
-        turnoDaoMockedStatic.when(TurnoDao::getInstance).thenReturn(turnoDaoMock);
+
+
         medicoDaoMockedStatic.when(MedicoDao::getInstance).thenReturn(medicoDaoMock);
-        gestionTurnosService = GestionTurnosService.getInstance();
 
         // Arrange
         int idMedico = 1;
@@ -58,22 +57,34 @@ void testSolicitarTurno() {
         Medico medicoMock = Mockito.mock(Medico.class);
         when(medicoDaoMock.buscar(idMedico)).thenReturn(medicoMock);
 
+        // Create a mock Turno and add it to the Paciente's turnosSolicitados
+        Turno turnoMock = Mockito.mock(Turno.class);
+        paciente.getTurnosSolicitados().add(turnoMock);
+
+        // Initialize AtencionMedicoService after setting up the MedicoDao mock
+        atencionMedicoService = AtencionMedicoService.getInstance();
+
         // Act
-        gestionTurnosService.solicitarTurno(idMedico, paciente);
+        atencionMedicoService.asistirTurno(idMedico, paciente);
 
         // Assert
-        verify(turnoDaoMock, times(1)).guardar(any());
+        verify(medicoDaoMock, times(2)).modificar(eq(idMedico), any(Medico.class));
     }
 }
 
+
 @Test
-void testSolicitarTurnoPrint() {
-    try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class);
-         MockedStatic<TurnoDao> turnoDaoMockedStatic = Mockito.mockStatic(TurnoDao.class)) {
+void testAsistirTurnoPrint() {
+    Mockito.reset(medicoDaoMock);
+    try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
 
         medicoDaoMockedStatic.when(MedicoDao::getInstance).thenReturn(medicoDaoMock);
-        turnoDaoMockedStatic.when(TurnoDao::getInstance).thenReturn(turnoDaoMock);
-        gestionTurnosService = GestionTurnosService.getInstance();
+        atencionMedicoService = AtencionMedicoService.getInstance();
+
+        // Mock the Random object
+        Random randomMock = Mockito.mock(Random.class);
+        atencionMedicoService.random = randomMock;
+        when(randomMock.nextInt(2)).thenReturn(1); // Always return 1 to simulate that the doctor always prescribes medications
 
         // Arrange
         int idMedico = 1;
@@ -87,16 +98,20 @@ void testSolicitarTurnoPrint() {
         // Create a mock Medico
         Medico medicoMock = Mockito.mock(Medico.class);
         when(medicoDaoMock.buscar(idMedico)).thenReturn(medicoMock);
+
+        // Create a mock Turno and add it to the Paciente's turnosSolicitados
+        Turno turnoMock = Mockito.mock(Turno.class);
+        paciente.getTurnosSolicitados().add(turnoMock);
 
         // Capturar el System.out
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Act
-        gestionTurnosService.solicitarTurno(idMedico, paciente);
+        atencionMedicoService.asistirTurno(idMedico, paciente);
 
         // Assert
-        String expectedOutput = "Solicitando turno\nTurno agregado. El paciente ahora tiene 1 turnos.\n";
+        String expectedOutput = "El paciente Juan Perez ha sido atendido por el médico \nEl medico receto medicamentos\n";
         assertThat(outContent.toString(), is(expectedOutput));
     }
 }

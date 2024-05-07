@@ -16,7 +16,7 @@ public class AtencionMedicoService {
 
     public static AtencionMedicoService instance = null;
 
-    Random random = new Random();
+    public Random random = new Random();
 
     public static AtencionMedicoService getInstance(){
         if(instance == null){
@@ -68,7 +68,7 @@ public class AtencionMedicoService {
                 Receta nuevaReceta = medico.crearReceta(medicamentosReceta);
 
                 // Asignar la receta al turno
-                turno.setReceta(Optional.of(nuevaReceta));
+                turno.setReceta(Optional.ofNullable(nuevaReceta));
 
 
             }
