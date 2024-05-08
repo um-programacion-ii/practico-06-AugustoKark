@@ -22,21 +22,21 @@ public class RecetaDao {
         }
     }
 
-    public void borrar(int id){
-        recetas.remove(id);
-    }
-
-    public Receta buscar(int id){
-        return recetas.get(id);
-    }
-
-    public void modificar(int id, Receta receta){
-        recetas.put(id, receta);
-    }
-
-    public Map<Integer, Receta> getRecetas(){
-        return recetas;
-    }
+//    public void borrar(int id){
+//        recetas.remove(id);
+//    }
+//
+//    public Receta buscar(int id){
+//        return recetas.get(id);
+//    }
+//
+//    public void modificar(int id, Receta receta){
+//        recetas.put(id, receta);
+//    }
+//
+//    public Map<Integer, Receta> getRecetas(){
+//        return recetas;
+//    }
 
 
 

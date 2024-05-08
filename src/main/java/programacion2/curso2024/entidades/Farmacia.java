@@ -7,7 +7,7 @@ public class Farmacia {
     private static Farmacia instance = null;
 
     // Mapa de medicamentos y sus cantidades
-    private Map<Medicamento, Integer> medicametosMap = new HashMap<>();
+//    private Map<Medicamento, Integer> medicametosMap = new HashMap<>();
 
     public static Farmacia getInstance(){
         if(instance == null){

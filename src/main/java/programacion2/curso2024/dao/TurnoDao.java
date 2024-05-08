@@ -25,20 +25,20 @@ public class TurnoDao {
         }
     }
 
-    public void borrar(int id){
-        turnos.remove(id);
-    }
-
-    public Turno buscar(int id){
-        return turnos.get(id);
-    }
-
-    public void modificar(int id, Turno turno){
-        turnos.put(id, turno);
-    }
-
-    public Map<Integer, Turno> getTurnos(){
-        return turnos;
-    }
+//    public void borrar(int id){
+//        turnos.remove(id);
+//    }
+//
+//    public Turno buscar(int id){
+//        return turnos.get(id);
+//    }
+//
+//    public void modificar(int id, Turno turno){
+//        turnos.put(id, turno);
+//    }
+//
+//    public Map<Integer, Turno> getTurnos(){
+//        return turnos;
+//    }
 
 }

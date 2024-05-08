@@ -36,45 +36,7 @@ public class AtencionMedicoServiceTest {
     }
 
 @Test
-void testAsistirTurno() {
-    Mockito.reset(medicoDaoMock);
-    try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
-
-
-
-        medicoDaoMockedStatic.when(MedicoDao::getInstance).thenReturn(medicoDaoMock);
-
-        // Arrange
-        int idMedico = 1;
-        Paciente paciente = new Paciente("Juan", "Perez", ObraSocial.PAMI, 1);
-
-        // Create a mock Map
-        Map<Integer, Medico> medicosMock = Mockito.mock(Map.class);
-        when(medicoDaoMock.getMedicos()).thenReturn(medicosMock);
-        when(medicosMock.containsKey(idMedico)).thenReturn(true);
-
-        // Create a mock Medico
-        Medico medicoMock = Mockito.mock(Medico.class);
-        when(medicoDaoMock.buscar(idMedico)).thenReturn(medicoMock);
-
-        // Create a mock Turno and add it to the Paciente's turnosSolicitados
-        Turno turnoMock = Mockito.mock(Turno.class);
-        paciente.getTurnosSolicitados().add(turnoMock);
-
-        // Initialize AtencionMedicoService after setting up the MedicoDao mock
-        atencionMedicoService = AtencionMedicoService.getInstance();
-
-        // Act
-        atencionMedicoService.asistirTurno(idMedico, paciente);
-
-        // Assert
-        verify(medicoDaoMock, times(2)).modificar(eq(idMedico), any(Medico.class));
-    }
-}
-
-
-@Test
-void testAsistirTurnoPrint() {
+void testAsistirTurnoAndPrint() {
     Mockito.reset(medicoDaoMock);
     try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
 
@@ -103,16 +65,65 @@ void testAsistirTurnoPrint() {
         Turno turnoMock = Mockito.mock(Turno.class);
         paciente.getTurnosSolicitados().add(turnoMock);
 
-        // Capturar el System.out
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
         // Act
         atencionMedicoService.asistirTurno(idMedico, paciente);
 
         // Assert
+        verify(medicoDaoMock, times(2)).modificar(eq(idMedico), any(Medico.class));
+
+        // Capturar el System.out
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Act again
+        atencionMedicoService.asistirTurno(idMedico, paciente);
+
+        // Assert again
         String expectedOutput = "El paciente Juan Perez ha sido atendido por el médico \nEl medico receto medicamentos\n";
         assertThat(outContent.toString(), is(expectedOutput));
     }
 }
+
+
+//@Test
+//void testAsistirTurnoPrint() {
+//    Mockito.reset(medicoDaoMock);
+//    try (MockedStatic<MedicoDao> medicoDaoMockedStatic = Mockito.mockStatic(MedicoDao.class)) {
+//
+//        medicoDaoMockedStatic.when(MedicoDao::getInstance).thenReturn(medicoDaoMock);
+//        atencionMedicoService = AtencionMedicoService.getInstance();
+//
+//        // Mock the Random object
+//        Random randomMock = Mockito.mock(Random.class);
+//        atencionMedicoService.random = randomMock;
+//        when(randomMock.nextInt(2)).thenReturn(1); // Always return 1 to simulate that the doctor always prescribes medications
+//
+//        // Arrange
+//        int idMedico = 1;
+//        Paciente paciente = new Paciente("Juan", "Perez", ObraSocial.PAMI, 1);
+//
+//        // Create a mock Map
+//        Map<Integer, Medico> medicosMock = Mockito.mock(Map.class);
+//        when(medicoDaoMock.getMedicos()).thenReturn(medicosMock);
+//        when(medicosMock.containsKey(idMedico)).thenReturn(true);
+//
+//        // Create a mock Medico
+//        Medico medicoMock = Mockito.mock(Medico.class);
+//        when(medicoDaoMock.buscar(idMedico)).thenReturn(medicoMock);
+//
+//        // Create a mock Turno and add it to the Paciente's turnosSolicitados
+//        Turno turnoMock = Mockito.mock(Turno.class);
+//        paciente.getTurnosSolicitados().add(turnoMock);
+//
+//        // Capturar el System.out
+//        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+//        System.setOut(new PrintStream(outContent));
+//
+//        // Act
+//        atencionMedicoService.asistirTurno(idMedico, paciente);
+//
+//        // Assert
+//        String expectedOutput = "El paciente Juan Perez ha sido atendido por el médico \nEl medico receto medicamentos\n";
+//        assertThat(outContent.toString(), is(expectedOutput));
+//    }
 }
